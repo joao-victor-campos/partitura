@@ -1,2 +1,8 @@
 .claude/
 .superpowers/
+node_modules/
+dist/
+coverage/
+.DS_Store
+spikes/conversion/input/
+spikes/conversion/out/
