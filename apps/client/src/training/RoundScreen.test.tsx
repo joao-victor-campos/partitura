@@ -1,10 +1,15 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { seededRng, type ExerciseConfig } from '@partitura/core';
+import { nextQuestion, seededRng, type Attempt, type ExerciseConfig, type Question } from '@partitura/core';
 import { addAttempt, addRound, attemptsFor } from '../storage/db';
 import { playMidi } from '../audio/piano';
 import { RoundScreen } from './RoundScreen';
 
+// Calls through to the real selection, but lets a test see what it was given.
+vi.mock('@partitura/core', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@partitura/core')>();
+  return { ...actual, nextQuestion: vi.fn(actual.nextQuestion) };
+});
 vi.mock('../storage/db', () => ({
   db: {},
   attemptsFor: vi.fn(async () => []),
@@ -67,6 +72,25 @@ describe('RoundScreen', () => {
     const other = screen.queryByRole('button', { name: `${label} ${octave + 1}` }) ?? screen.getByRole('button', { name: `${label} ${octave - 1}` });
     fireEvent.click(other);
     expect(screen.getByText(`Era ${label}, em outra oitava`)).toBeInTheDocument();
+  });
+
+  it('asks the first question using the stored Attempts', async () => {
+    const question: Question = {
+      kind: 'note-reading', itemKey: 'nr:treble:G4', clef: 'treble', layout: 'single',
+      pitch: { step: 'G', octave: 4, alter: 0 }, answerMode: 'name',
+    };
+    const stored: Attempt[] = Array.from({ length: 6 }, (_, i) => ({
+      id: `a${i}`, roundId: 'earlier', exercise: 'note-reading', itemKey: question.itemKey, question,
+      answer: { kind: 'step', step: 'C' }, correct: false, ms: 3000, answeredAt: `2026-10-06T10:00:0${i}.000Z`,
+    }));
+    vi.mocked(attemptsFor).mockResolvedValueOnce(stored);
+    vi.mocked(nextQuestion).mockClear();
+    render(<RoundScreen config={config} levelId={null} mode={{ kind: 'count', total: 2 }} onFinished={() => {}} onQuit={() => {}} rng={seededRng(3)} />);
+
+    await shownNote(null);
+    // The very first question is chosen with the stored history, not an empty one.
+    expect(vi.mocked(nextQuestion).mock.calls[0][1]).toEqual(stored);
+    expect(vi.mocked(nextQuestion).mock.calls[0][2]).toBeNull();
   });
 
   describe('when things go wrong or props change', () => {
