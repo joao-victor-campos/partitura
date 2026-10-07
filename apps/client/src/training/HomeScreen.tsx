@@ -1,4 +1,5 @@
 import type { ExerciseKind } from '@partitura/core';
+import { exerciseTitle } from '../i18n/format';
 import { t } from '../i18n/pt-BR';
 
 interface Props {
@@ -7,8 +8,8 @@ interface Props {
 }
 
 const CARDS: { exercise: ExerciseKind; title: string; hint: string }[] = [
-  { exercise: 'note-reading', title: t.home.noteReading, hint: t.home.noteReadingHint },
-  { exercise: 'note-value', title: t.home.noteValue, hint: t.home.noteValueHint },
+  { exercise: 'note-reading', title: exerciseTitle('note-reading'), hint: t.home.noteReadingHint },
+  { exercise: 'note-value', title: exerciseTitle('note-value'), hint: t.home.noteValueHint },
 ];
 
 export function HomeScreen({ onPick, onProgress }: Props) {

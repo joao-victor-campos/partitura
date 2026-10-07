@@ -1,5 +1,8 @@
 import { denominator, type Clef, type NoteReadingQuestion, type Pitch, type ValueSymbol } from '@partitura/core';
 
+/** Si4, the middle line of clave de Sol: where Note value symbols are drawn (here and when played back). */
+export const VALUE_PITCH: Pitch = { step: 'B', octave: 4, alter: 0 };
+
 // Builds tiny MEI documents for Verovio. Exercises never touch MusicXML (see ADR 0005).
 
 const CLEF: Record<Clef, string> = {
@@ -44,11 +47,11 @@ export function noteReadingMei(q: NoteReadingQuestion): string {
   );
 }
 
-/** A Note value on the middle line (Si4) of a treble staff. */
+/** A Note value on the middle line of a treble staff. */
 export function symbolMei(s: ValueSymbol): string {
   const dots = s.dotted ? ' dots="1"' : '';
   const dur = denominator(s.value);
-  const body = s.rest ? `<rest dur="${dur}"${dots}/>` : `<note pname="b" oct="4" dur="${dur}"${dots}/>`;
+  const body = s.rest ? `<rest dur="${dur}"${dots}/>` : `<note pname="${VALUE_PITCH.step.toLowerCase()}" oct="${VALUE_PITCH.octave}" dur="${dur}"${dots}/>`;
   return meiDocument(`<staffGrp>${staffDef(1, 'treble')}</staffGrp>`, measure(staff(1, body)));
 }
 

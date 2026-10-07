@@ -1,4 +1,4 @@
-import type { NoteValue, Pitch, ValueSymbol } from '@partitura/core';
+import type { ExerciseKind, NoteValue, Pitch, ValueSymbol } from '@partitura/core';
 import { t } from './pt-BR';
 
 export function pitchLabel(p: Pitch): string {
@@ -15,6 +15,10 @@ export function symbolLabel(s: ValueSymbol): string {
   if (s.rest) return `${t.restOf} ${name}`;
   if (s.dotted) return `${name} ${t.dotted}`;
   return name;
+}
+
+export function exerciseTitle(kind: ExerciseKind): string {
+  return kind === 'note-reading' ? t.home.noteReading : t.home.noteValue;
 }
 
 export function pluralValue(value: NoteValue): string {

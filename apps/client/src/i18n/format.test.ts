@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatPercent, formatSeconds, pitchAriaLabel, pitchLabel, pluralValue, symbolLabel } from './format';
+import { exerciseTitle, formatPercent, formatSeconds, pitchAriaLabel, pitchLabel, pluralValue, symbolLabel } from './format';
 
 describe('format', () => {
   it('names pitches in solfège', () => {
@@ -14,6 +14,11 @@ describe('format', () => {
     expect(symbolLabel({ value: 'half', rest: true, dotted: false })).toBe('pausa de mínima');
     expect(symbolLabel({ value: 'quarter', rest: false, dotted: true })).toBe('semínima pontuada');
     expect(pluralValue('eighth')).toBe('colcheias');
+  });
+
+  it('titles each kind of Exercise', () => {
+    expect(exerciseTitle('note-reading')).toBe('Leitura de notas');
+    expect(exerciseTitle('note-value')).toBe('Figuras musicais');
   });
 
   it('formats numbers the Brazilian way', () => {

@@ -6,6 +6,7 @@ import {
 } from '@partitura/core';
 import { loadPiano } from '../audio/piano';
 import { preloadNotation } from '../render/verovio';
+import { exerciseTitle } from '../i18n/format';
 import { t } from '../i18n/pt-BR';
 
 export interface RoundStart {
@@ -54,7 +55,7 @@ export function SetupScreen({ exercise, onStart, onBack }: Props) {
   return (
     <main className="screen">
       <button type="button" className="link" onClick={onBack}>{t.setup.back}</button>
-      <h1>{exercise === 'note-reading' ? t.home.noteReading : t.home.noteValue}</h1>
+      <h1>{exerciseTitle(exercise)}</h1>
 
       <section className="levels" aria-label={t.setup.levels}>
         {levels.map((level) => (
@@ -82,7 +83,7 @@ export function SetupScreen({ exercise, onStart, onBack }: Props) {
 
       <label className="field field--inline">
         <input type="checkbox" checked={speed} onChange={(e) => setSpeed(e.target.checked)} />
-        {t.setup.speed}
+        {t.setup.speed(SPEED_ROUND.durationMs / 1000)}
       </label>
 
       {!valid && <p className="is-wrong">{t.setup.invalid}</p>}

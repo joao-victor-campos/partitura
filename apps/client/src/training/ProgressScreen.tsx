@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import {
-  levelOrder, suggestNextLevel, weakItems,
+  PROMOTION_ACCURACY, levelOrder, suggestNextLevel, weakItems,
   type Attempt, type Clef, type ExerciseKind, type Pitch, type Question, type RoundRecord, type WeakItem,
 } from '@partitura/core';
 import { Staff } from '../components/Staff';
-import { formatPercent, pitchLabel, pluralValue, symbolLabel } from '../i18n/format';
+import { exerciseTitle, formatPercent, pitchLabel, pluralValue, symbolLabel } from '../i18n/format';
 import { t } from '../i18n/pt-BR';
 import { pitchesMei } from '../render/mei';
 import { attemptsFor, db, roundsFor } from '../storage/db';
@@ -77,14 +77,13 @@ export function ProgressScreen({ exercise, onBack }: Props) {
   const weak = weakItems(data.attempts);
   const next = levels.find((l) => l.id === suggestNextLevel(data.rounds, levels.map((l) => l.id)));
   const recent = [...data.rounds].reverse().slice(0, RECENT_ROUNDS);
-  const title = exercise === 'note-reading' ? t.home.noteReading : t.home.noteValue;
 
   return (
     <main className="screen">
       <button type="button" className="link" onClick={onBack}>{t.progress.back}</button>
-      <h1>{t.progress.title(title)}</h1>
+      <h1>{t.progress.title(exerciseTitle(exercise))}</h1>
 
-      {next && <p className="callout">{t.progress.suggestion(next.number)}</p>}
+      {next && <p className="callout">{t.progress.suggestion(Math.round(PROMOTION_ACCURACY * 100), next.number)}</p>}
 
       <section className="field">
         <h2>{t.progress.weak}</h2>

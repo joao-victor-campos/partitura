@@ -18,6 +18,11 @@ export interface RoundRecord {
   totalMs: number;
 }
 
+/** Average time per answer in a Round, in milliseconds (0 when nothing was answered). */
+export function recordAverageMs(record: RoundRecord): number {
+  return record.answered === 0 ? 0 : record.totalMs / record.answered;
+}
+
 export interface WeakItem {
   itemKey: string;
   accuracy: number;

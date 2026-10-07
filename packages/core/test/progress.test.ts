@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Attempt } from '../src/training/attempt';
 import type { Question } from '../src/training/exercise';
-import { suggestNextLevel, weakItems, type RoundRecord } from '../src/training/progress';
+import { recordAverageMs, suggestNextLevel, weakItems, type RoundRecord } from '../src/training/progress';
 
 let seq = 0;
 const q = (itemKey: string): Question => ({
@@ -55,5 +55,15 @@ describe('suggestNextLevel', () => {
 
   it('has nothing to suggest after the top Level', () => {
     expect(suggestNextLevel([round('nr-3', 20, 1), round('nr-3', 20, 2), round('nr-3', 20, 3)], order)).toBeNull();
+  });
+});
+
+describe('recordAverageMs', () => {
+  it('divides the total time by the answered questions', () => {
+    expect(recordAverageMs({ ...round('nr-1', 10, 1), answered: 20, totalMs: 42_000 })).toBe(2100);
+  });
+
+  it('is 0 when nothing was answered', () => {
+    expect(recordAverageMs({ ...round('nr-1', 0, 1), answered: 0, totalMs: 0 })).toBe(0);
   });
 });

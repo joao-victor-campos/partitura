@@ -3,7 +3,7 @@ import { checkAnswer, type Question } from './exercise';
 
 export type RoundMode = { kind: 'count'; total: number } | { kind: 'timed'; durationMs: number };
 export const DEFAULT_ROUND: RoundMode = { kind: 'count', total: 20 };
-export const SPEED_ROUND: RoundMode = { kind: 'timed', durationMs: 60_000 };
+export const SPEED_ROUND: Extract<RoundMode, { kind: 'timed' }> = { kind: 'timed', durationMs: 60_000 };
 
 export type RoundStatus = 'asking' | 'feedback' | 'finished';
 
