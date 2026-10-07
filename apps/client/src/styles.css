@@ -70,6 +70,8 @@ input[type='checkbox'] { width: 24px; min-height: 24px; height: 24px; }
 .notation { display: flex; justify-content: center; color: var(--ink); min-height: 180px; }
 /* Verovio leaves glyph paths without a fill, which would default to black; coloured notes carry their own fill. */
 .notation svg { max-width: 100%; height: auto; max-height: 40vh; fill: currentColor; }
+/* Verovio's inner svg carries color="black", which would reset currentColor for the glyphs and staff lines. */
+.notation svg .definition-scale { color: inherit; }
 .notation--small { min-height: 0; }
 .notation--small svg { max-height: 120px; }
 .round__feedback { min-height: 104px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
