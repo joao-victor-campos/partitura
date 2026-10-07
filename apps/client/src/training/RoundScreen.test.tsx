@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { seededRng, type ExerciseConfig } from '@partitura/core';
-import { addAttempt, addRound } from '../storage/db';
+import { addAttempt, addRound, attemptsFor } from '../storage/db';
 import { playMidi } from '../audio/piano';
 import { RoundScreen } from './RoundScreen';
 
@@ -55,5 +55,54 @@ describe('RoundScreen', () => {
     expect(onFinished.mock.calls[0][0]).toMatchObject({ exercise: 'note-reading', levelId: 'nr-1', answered: 2, correct: 1, speed: false });
     expect(addRound).toHaveBeenCalledTimes(1);
     expect(addAttempt).toHaveBeenCalledTimes(2);
+  });
+
+  describe('when things go wrong or props change', () => {
+    afterEach(() => vi.restoreAllMocks());
+
+    it('still shows the first question when past Attempts cannot be loaded', async () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      vi.mocked(attemptsFor).mockRejectedValueOnce(new Error('idb down'));
+      render(<RoundScreen config={config} levelId={null} mode={{ kind: 'count', total: 2 }} onFinished={() => {}} onQuit={() => {}} rng={seededRng(3)} />);
+
+      expect(await screen.findByText('1 de 2')).toBeInTheDocument();
+      expect(await shownNote(null)).not.toBe('');
+      expect(warn).toHaveBeenCalled();
+    });
+
+    it('still finishes the Round when saving it fails, and keeps going when an Attempt fails to save', async () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      vi.mocked(addRound).mockRejectedValueOnce(new Error('idb down'));
+      vi.mocked(addAttempt).mockRejectedValueOnce(new Error('idb down'));
+      const onFinished = vi.fn();
+      render(<RoundScreen config={config} levelId={null} mode={{ kind: 'count', total: 1 }} onFinished={onFinished} onQuit={() => {}} rng={seededRng(3)} />);
+
+      const note = await shownNote(null);
+      fireEvent.click(screen.getByRole('button', { name: LABEL[note[0]] }));
+      expect(screen.getByText('Certo!')).toBeInTheDocument();
+
+      await waitFor(() => expect(onFinished).toHaveBeenCalledTimes(1));
+      expect(onFinished.mock.calls[0][0]).toMatchObject({ answered: 1, correct: 1 });
+      expect(warn).toHaveBeenCalledTimes(2);
+    });
+
+    it('does not reset the Round when the parent re-renders with new but equal props', async () => {
+      const onFinished = vi.fn();
+      const onQuit = () => {};
+      const { rerender } = render(<RoundScreen config={{ ...config }} levelId="nr-1" mode={{ kind: 'count', total: 2 }} onFinished={onFinished} onQuit={onQuit} rng={seededRng(3)} />);
+
+      const first = await shownNote(null);
+      fireEvent.click(screen.getByRole('button', { name: first[0] === 'c' ? 'Ré' : 'Dó' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Próxima' }));
+      expect(await screen.findByText('2 de 2')).toBeInTheDocument();
+      const second = await shownNote(first);
+
+      rerender(<RoundScreen config={{ ...config }} levelId="nr-1" mode={{ kind: 'count', total: 2 }} onFinished={onFinished} onQuit={onQuit} rng={seededRng(3)} />);
+      await new Promise((resolve) => setTimeout(resolve, 50));
+
+      expect(screen.getByText('2 de 2')).toBeInTheDocument();
+      expect(await shownNote(first)).toBe(second);
+      expect(onFinished).not.toHaveBeenCalled();
+    });
   });
 });

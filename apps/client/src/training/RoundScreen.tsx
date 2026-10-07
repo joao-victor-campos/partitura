@@ -22,7 +22,15 @@ interface Props {
   rng?: Rng;
 }
 
-export function RoundScreen({ config, levelId, mode, onFinished, onQuit, rng = Math.random }: Props) {
+export function RoundScreen(props: Props) {
+  const { onQuit } = props;
+  // A Round is fixed at mount: later changes to these props (even new object identities)
+  // must not reset it. The parent mounts a new RoundScreen (new `key`) for a new Round.
+  const [{ config, levelId, mode, rng = Math.random }] = useState(() => props);
+  const onFinishedRef = useRef(props.onFinished);
+  useEffect(() => {
+    onFinishedRef.current = props.onFinished;
+  });
   const [roundId] = useState(() => crypto.randomUUID());
   const [startedAt] = useState(() => new Date().toISOString());
   const history = useRef<Attempt[]>([]);
@@ -42,11 +50,19 @@ export function RoundScreen({ config, levelId, mode, onFinished, onQuit, rng = M
   // Load past Attempts first so the very first question already adapts to them.
   useEffect(() => {
     let alive = true;
-    attemptsFor(db, config.exercise).then((past) => {
-      if (!alive) return;
-      history.current = past;
-      setState(startRound(mode, generate(null), Date.now()));
-    });
+    attemptsFor(db, config.exercise)
+      .catch((error: unknown) => {
+        // Without stored history the Round still works, just without adapting to it.
+        console.warn('Could not load past Attempts', error);
+        return [] as Attempt[];
+      })
+      .then((past) => {
+        if (!alive) return;
+        history.current = past;
+        const startedMs = Date.now();
+        setNow(startedMs);
+        setState(startRound(mode, generate(null), startedMs));
+      });
     return () => {
       alive = false;
     };
@@ -77,8 +93,10 @@ export function RoundScreen({ config, levelId, mode, onFinished, onQuit, rng = M
       correct: state.correct,
       totalMs: state.totalMs,
     };
-    void addRound(db, record).then(() => onFinished(record));
-  }, [state, roundId, config, levelId, mode, startedAt, onFinished]);
+    addRound(db, record)
+      .catch((error: unknown) => console.warn('Could not save the Round', error))
+      .finally(() => onFinishedRef.current(record));
+  }, [state, roundId, config, levelId, mode, startedAt]);
 
   const handleAnswer = useCallback(
     (answer: Answer) => {
@@ -97,7 +115,7 @@ export function RoundScreen({ config, levelId, mode, onFinished, onQuit, rng = M
         answeredAt: new Date(at).toISOString(),
       };
       history.current = [...history.current, attempt];
-      void addAttempt(db, attempt);
+      addAttempt(db, attempt).catch((error: unknown) => console.warn('Could not save an Attempt', error));
       setState(result.state);
 
       if (result.correct) {
