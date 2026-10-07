@@ -8,3 +8,4 @@ export * from './training/attempt';
 export * from './training/selection';
 export * from './training/exercise';
 export * from './training/levels';
+export * from './training/round';
