@@ -1,32 +1,56 @@
-# React + TypeScript + Vite
+# Partitura client
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Vite + React app, wrapped with Capacitor for Android. The interface is in Brazilian Portuguese; every
+on-screen string lives in `src/i18n/pt-BR.ts`. The training rules are in `packages/core`.
 
-Currently, two official plugins are available:
+All commands run from the repository root.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Develop
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```sh
+pnpm install
+pnpm dev                              # Vite dev server
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+The offline piano samples are committed in `apps/client/public/samples/piano/`. To download them again:
+
+```sh
+node apps/client/scripts/fetch-piano-samples.mjs
+```
+
+## Test, check, build
+
+```sh
+pnpm test                             # core + client tests
+pnpm --filter @partitura/client typecheck
+pnpm --filter @partitura/client lint
+pnpm --filter @partitura/client build
+```
+
+## Android
+
+Needs JDK 21 and the Android SDK.
+
+```sh
+pnpm --filter @partitura/client android   # build, sync and run on a device or emulator
+```
+
+On a fresh clone, prepare the project before opening it in Android Studio:
+
+```sh
+pnpm install
+pnpm --filter @partitura/client build
+cd apps/client && npx cap sync android
+```
+
+To build an APK from the command line:
+
+```sh
+cd apps/client/android
+JAVA_HOME=$(/usr/libexec/java_home -v 21) ANDROID_HOME=~/Library/Android/sdk ./gradlew assembleDebug
+```
+
+## Credits
+
+Piano sounds: Salamander Grand Piano by Alexander Holm, licensed
+[CC-BY 3.0](https://creativecommons.org/licenses/by/3.0/), from <https://tonejs.github.io/audio/salamander/>.
