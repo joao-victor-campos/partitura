@@ -9,3 +9,4 @@ export * from './training/selection';
 export * from './training/exercise';
 export * from './training/levels';
 export * from './training/round';
+export * from './training/progress';
