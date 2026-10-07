@@ -2,7 +2,7 @@ import { fromDiatonicIndex, midiNumber, pitchKey, type Alter, type Pitch } from 
 import type { Answer } from './answer';
 
 export type Clef = 'treble' | 'bass';
-/** Which staff or staves a note-reading Exercise uses. "mixed" alternates single staves; "grand" shows both. */
+/** Which staff or staves a note-reading Exercise uses. "mixed" mixes single staves; "grand" shows both. */
 export type StaffChoice = 'treble' | 'bass' | 'mixed' | 'grand';
 export type LedgerLines = 0 | 1 | 2 | 3;
 export type AnswerMode = 'name' | 'piano';

@@ -15,7 +15,7 @@ const noteValuePlural: Record<NoteValue, string> = {
 const clef: Record<Clef, string> = { treble: 'clave de Sol', bass: 'clave de Fá' };
 
 const staveChoice: Record<StaffChoice, string> = {
-  treble: 'Clave de Sol', bass: 'Clave de Fá', mixed: 'Sol e Fá alternadas', grand: 'Pauta dupla (piano)',
+  treble: 'Clave de Sol', bass: 'Clave de Fá', mixed: 'Sol e Fá misturadas', grand: 'Pauta dupla (piano)',
 };
 
 const typeChoice: Record<NoteValueQuestionType, string> = {
