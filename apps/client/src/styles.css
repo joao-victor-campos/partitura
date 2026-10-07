@@ -44,7 +44,7 @@ button {
 button:disabled { cursor: default; }
 button.primary { background: var(--accent); color: var(--accent-ink); border-color: transparent; padding: 0 24px; font-weight: 600; }
 button.primary:disabled { opacity: 0.5; }
-button.link { border: none; background: none; color: var(--accent); min-height: auto; padding: 8px 0; align-self: flex-start; }
+button.link { border: none; background: none; color: var(--accent); min-height: var(--tap); display: inline-flex; align-items: center; padding: 0; align-self: flex-start; }
 button[aria-pressed='true'] { border-color: var(--accent); box-shadow: inset 0 0 0 2px var(--accent); }
 select, input { font: inherit; min-height: var(--tap); }
 input[type='checkbox'] { width: 24px; min-height: 24px; height: 24px; }
