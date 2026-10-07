@@ -7,17 +7,24 @@ interface Props {
 }
 
 export function Staff({ mei, className = 'staff' }: Props) {
-  const [svg, setSvg] = useState<string | null>(null);
+  // Keep the source MEI next to its SVG so a stale drawing is never shown for a new mei.
+  const [rendered, setRendered] = useState<{ mei: string; svg: string } | null>(null);
 
   useEffect(() => {
     let alive = true;
-    renderMei(mei).then((result) => {
-      if (alive) setSvg(result);
-    });
+    renderMei(mei)
+      .then((svg) => {
+        if (alive) setRendered({ mei, svg });
+      })
+      .catch((error: unknown) => {
+        console.warn('Staff: could not render notation', error);
+      });
     return () => {
       alive = false;
     };
   }, [mei]);
+
+  const svg = rendered?.mei === mei ? rendered.svg : null;
 
   return (
     <div

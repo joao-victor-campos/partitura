@@ -27,7 +27,7 @@ function noteXml(p: Pitch, color?: string): string {
 
 function meiDocument(staffGrp: string, measures: string): string {
   return '<?xml version="1.0" encoding="UTF-8"?>'
-    + '<mei xmlns="http://www.music-encoding.org/ns/mei" meiversion="5.0"><music><body><mdiv><score>'
+    + '<mei xmlns="http://www.music-encoding.org/ns/mei" meiversion="5.0"><meiHead/><music><body><mdiv><score>'
     + `<scoreDef>${staffGrp}</scoreDef><section>${measures}</section>`
     + '</score></mdiv></body></music></mei>';
 }
