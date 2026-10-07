@@ -4,3 +4,7 @@ export * from './music/noteValue';
 export * from './training/answer';
 export * from './training/noteReading';
 export * from './training/noteValues';
+export * from './training/attempt';
+export * from './training/selection';
+export * from './training/exercise';
+export * from './training/levels';
