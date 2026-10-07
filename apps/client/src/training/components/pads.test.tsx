@@ -49,6 +49,25 @@ describe('PianoKeyboard', () => {
     expect(onAnswer).toHaveBeenCalledWith(66);
     expect(screen.getByText('Dó central')).toBeInTheDocument();
   });
+
+  it('opens centred on middle C when it is in range, else on the middle of the range', () => {
+    const scrolled: (string | null)[] = [];
+    const original = Element.prototype.scrollIntoView;
+    Element.prototype.scrollIntoView = function (this: Element) { scrolled.push(this.getAttribute('data-midi')); };
+    try {
+      const props = { onAnswer: () => {}, disabled: false, correct: null, wrong: null };
+      render(<PianoKeyboard lowMidi={48} highMidi={72} {...props} />);
+      render(<PianoKeyboard lowMidi={72} highMidi={83} {...props} />);
+    } finally {
+      Element.prototype.scrollIntoView = original;
+    }
+    // 72..83 has the white keys 72 74 76 77 79 81 83; the middle one is 77.
+    expect(scrolled).toEqual(['60', '77']);
+  });
+
+  it('does not throw when scrollIntoView is missing (jsdom)', () => {
+    expect(() => render(<PianoKeyboard lowMidi={60} highMidi={71} onAnswer={() => {}} disabled={false} correct={null} wrong={null} />)).not.toThrow();
+  });
 });
 
 describe('ChoicePad', () => {

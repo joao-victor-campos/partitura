@@ -61,7 +61,7 @@ export function QuestionView({ question, keyboard, feedback, onAnswer }: Props) 
     options = question.options.map(symbolLabel);
   } else {
     prompt = t.round.findValue(symbolLabel(question.symbol));
-    options = question.options.map((s) => <Staff key={symbolLabel(s)} className="staff staff--small" mei={symbolMei(s)} />);
+    options = question.options.map((s) => <Staff key={symbolLabel(s)} className="notation notation--small" mei={symbolMei(s)} />);
   }
 
   return (

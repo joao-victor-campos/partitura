@@ -5,6 +5,7 @@ import {
   type NoteValueQuestionType, type NoteValueSettings, type RoundMode, type StaffChoice,
 } from '@partitura/core';
 import { loadPiano } from '../audio/piano';
+import { preloadNotation } from '../render/verovio';
 import { t } from '../i18n/pt-BR';
 
 export interface RoundStart {
@@ -45,7 +46,8 @@ export function SetupScreen({ exercise, onStart, onBack }: Props) {
 
   const start = () => {
     // Called from a tap, so the browser lets the piano start.
-    void loadPiano();
+    loadPiano().catch((error: unknown) => console.warn('Could not load the piano', error));
+    preloadNotation();
     onStart({ config, levelId: selected === CUSTOM ? null : selected, mode: speed ? SPEED_ROUND : DEFAULT_ROUND });
   };
 

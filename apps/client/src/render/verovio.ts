@@ -32,6 +32,13 @@ function getToolkit(): Promise<VerovioToolkit> {
   return toolkit;
 }
 
+/** Starts loading the notation engine so the first question is not blank. Never throws. */
+export function preloadNotation(): void {
+  getToolkit().catch((error: unknown) => {
+    console.warn('Could not preload notation', error);
+  });
+}
+
 /** Renders a one-page MEI document to an SVG string. */
 export async function renderMei(mei: string): Promise<string> {
   const tk = await getToolkit();

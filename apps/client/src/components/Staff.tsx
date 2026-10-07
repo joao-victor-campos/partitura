@@ -6,7 +6,7 @@ interface Props {
   className?: string;
 }
 
-export function Staff({ mei, className = 'staff' }: Props) {
+export function Staff({ mei, className = 'notation' }: Props) {
   // Keep the source MEI next to its SVG so a stale drawing is never shown for a new mei.
   const [rendered, setRendered] = useState<{ mei: string; svg: string } | null>(null);
 

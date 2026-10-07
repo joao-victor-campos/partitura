@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import App from './App';
 
 vi.mock('./audio/piano', () => ({ loadPiano: vi.fn(async () => undefined), playMidi: vi.fn() }));
-vi.mock('./render/verovio', () => ({ renderMei: vi.fn(async () => '<svg></svg>') }));
+vi.mock('./render/verovio', () => ({ renderMei: vi.fn(async () => '<svg></svg>'), preloadNotation: vi.fn() }));
 
 describe('App', () => {
   it('goes from the training home to an Exercise setup and back', () => {

@@ -67,10 +67,11 @@ input[type='checkbox'] { width: 24px; min-height: 24px; height: 24px; }
 .round { justify-content: space-between; }
 .round__header { display: flex; justify-content: space-between; align-items: center; color: var(--muted); }
 .prompt { font-size: 1.3rem; text-align: center; margin: 0; }
-.staff { display: flex; justify-content: center; color: var(--ink); min-height: 180px; }
-.staff svg { max-width: 100%; height: auto; max-height: 40vh; }
-.staff--small { min-height: 0; }
-.staff--small svg { max-height: 90px; }
+.notation { display: flex; justify-content: center; color: var(--ink); min-height: 180px; }
+/* Verovio leaves glyph paths without a fill, which would default to black; coloured notes carry their own fill. */
+.notation svg { max-width: 100%; height: auto; max-height: 40vh; fill: currentColor; }
+.notation--small { min-height: 0; }
+.notation--small svg { max-height: 120px; }
 .round__feedback { min-height: 104px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .round__feedback p { margin: 0; font-size: 1.2rem; font-weight: 600; }
 
@@ -80,8 +81,10 @@ input[type='checkbox'] { width: 24px; min-height: 24px; height: 24px; }
 .pad--choices { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
 .pad--choices button { min-height: 72px; position: relative; padding: 8px 16px; font-size: 1.1rem; }
 .pad__shortcut { position: absolute; top: 6px; left: 10px; font-size: 0.75rem; color: var(--muted); }
-.is-correct { border-color: var(--good) !important; box-shadow: inset 0 0 0 3px var(--good); color: var(--good); }
-.is-wrong { border-color: var(--bad) !important; box-shadow: inset 0 0 0 3px var(--bad); color: var(--bad); }
+.is-correct { color: var(--good); }
+.is-wrong { color: var(--bad); }
+button.is-correct { border-color: var(--good) !important; box-shadow: inset 0 0 0 3px var(--good); }
+button.is-wrong { border-color: var(--bad) !important; box-shadow: inset 0 0 0 3px var(--bad); }
 
 /* The on-screen piano keeps real piano colours in both themes. */
 .piano { display: flex; overflow-x: auto; padding-bottom: 8px; touch-action: pan-x; }
@@ -95,8 +98,8 @@ input[type='checkbox'] { width: 24px; min-height: 24px; height: 24px; }
   border-radius: 0 0 6px 6px; background: #1d1b16; border: 1px solid #000; padding: 0;
 }
 .piano__middle-c { font-size: 0.65rem; color: #6b665c; }
-.piano .is-correct { background: var(--good); }
-.piano .is-wrong { background: var(--bad); }
+.piano button.is-correct { background: var(--good); }
+.piano button.is-wrong { background: var(--bad); }
 
 table { width: 100%; border-collapse: collapse; }
 th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); }

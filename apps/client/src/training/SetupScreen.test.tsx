@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { DEFAULT_ROUND, SPEED_ROUND } from '@partitura/core';
 import { SetupScreen } from './SetupScreen';
 
+vi.mock('../render/verovio', () => ({ renderMei: vi.fn(async () => '<svg></svg>'), preloadNotation: vi.fn() }));
 vi.mock('../audio/piano', () => ({ loadPiano: vi.fn(async () => undefined), playMidi: vi.fn() }));
 
 describe('SetupScreen', () => {
