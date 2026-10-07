@@ -14,7 +14,8 @@
   "dependencies": {
     "@partitura/core": "workspace:*",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "verovio": "^6.3.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^7.0.1",
