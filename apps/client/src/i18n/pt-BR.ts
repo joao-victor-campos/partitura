@@ -32,6 +32,10 @@ export const t = {
   flat: '♭',
   dotted: 'pontuada',
   restOf: 'pausa de',
+  error: {
+    title: 'Algo deu errado.',
+    home: 'Voltar ao início',
+  },
   home: {
     title: 'Treino',
     noteReading: 'Leitura de notas',
