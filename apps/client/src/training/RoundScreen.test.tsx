@@ -57,6 +57,18 @@ describe('RoundScreen', () => {
     expect(addAttempt).toHaveBeenCalledTimes(2);
   });
 
+  it('tells the learner when the right note was played in another octave', async () => {
+    const piano: ExerciseConfig = { ...config, answerMode: 'piano' };
+    render(<RoundScreen config={piano} levelId={null} mode={{ kind: 'count', total: 2 }} onFinished={() => {}} onQuit={() => {}} rng={seededRng(3)} />);
+
+    const note = await shownNote(null); // e.g. "d5"
+    const label = LABEL[note[0]];
+    const octave = Number(note[1]);
+    const other = screen.queryByRole('button', { name: `${label} ${octave + 1}` }) ?? screen.getByRole('button', { name: `${label} ${octave - 1}` });
+    fireEvent.click(other);
+    expect(screen.getByText(`Era ${label}, em outra oitava`)).toBeInTheDocument();
+  });
+
   describe('when things go wrong or props change', () => {
     afterEach(() => vi.restoreAllMocks());
 

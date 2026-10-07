@@ -7,7 +7,7 @@ import { playMidi } from '../audio/piano';
 import { useKeyDown } from '../hooks/useKeyDown';
 import { t } from '../i18n/pt-BR';
 import { addAttempt, addRound, attemptsFor, db } from '../storage/db';
-import { correctAnswerLabel, feedbackSound } from './feedback';
+import { feedbackSound, wrongAnswerMessage } from './feedback';
 import { QuestionView } from './QuestionView';
 
 /** How long "Certo!" stays before the next question. Wrong answers wait for "Próxima". */
@@ -164,9 +164,9 @@ export function RoundScreen(props: Props) {
 
       <footer className="round__feedback" aria-live="polite">
         {state.status === 'feedback' && state.last?.correct && <p className="is-correct">{t.round.correct}</p>}
-        {waitingForNext && (
+        {waitingForNext && state.last && (
           <>
-            <p className="is-wrong">{t.round.wrongWas(correctAnswerLabel(state.question))}</p>
+            <p className="is-wrong">{wrongAnswerMessage(state.question, state.last.answer)}</p>
             <button type="button" className="primary" onClick={handleNext}>{t.round.next}</button>
           </>
         )}

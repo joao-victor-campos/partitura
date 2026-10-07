@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Question } from '@partitura/core';
-import { correctAnswerLabel, feedbackSound } from './feedback';
+import { correctAnswerLabel, feedbackSound, wrongAnswerMessage } from './feedback';
 
 const reading: Question = {
   kind: 'note-reading', itemKey: 'nr:bass:F#3', clef: 'bass', layout: 'single',
@@ -21,6 +21,14 @@ describe('feedback', () => {
     expect(correctAnswerLabel(reading)).toBe('Fá♯');
     expect(correctAnswerLabel(symbol)).toBe('semínima');
     expect(correctAnswerLabel(relation)).toBe('2');
+  });
+
+  it('says when the right note name was played in another octave, without octave numbers', () => {
+    // Question: Fá♯ below middle C (MIDI 54).
+    expect(wrongAnswerMessage(reading, { kind: 'midi', midi: 66 })).toBe('Era Fá♯, em outra oitava');
+    expect(wrongAnswerMessage(reading, { kind: 'midi', midi: 55 })).toBe('Era Fá♯');
+    expect(wrongAnswerMessage(reading, { kind: 'step', step: 'G' })).toBe('Era Fá♯');
+    expect(wrongAnswerMessage(symbol, { kind: 'option', index: 1 })).toBe('Era semínima');
   });
 
   it('plays the asked note, or a note as long as the asked value at quarter = 90', () => {

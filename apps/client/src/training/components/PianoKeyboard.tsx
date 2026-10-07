@@ -27,6 +27,14 @@ export function PianoKeyboard({ lowMidi, highMidi, onAnswer, disabled, correct, 
     root.current?.querySelector(`[data-midi="${target}"]`)?.scrollIntoView?.({ inline: 'center', block: 'nearest' });
   }, [target]);
 
+  // After a wrong answer the right key may be off-screen: bring it into view.
+  useEffect(() => {
+    if (correct === null) return;
+    // A black key shares the slot of the white key just below it.
+    const slot = isWhiteKey(correct) ? correct : correct - 1;
+    root.current?.querySelector(`[data-midi="${slot}"]`)?.scrollIntoView?.({ inline: 'nearest', block: 'nearest' });
+  }, [correct]);
+
   const renderKey = (midi: number, base: string) => (
     <button
       type="button"

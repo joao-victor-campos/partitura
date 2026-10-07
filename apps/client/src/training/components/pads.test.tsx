@@ -65,6 +65,22 @@ describe('PianoKeyboard', () => {
     expect(scrolled).toEqual(['60', '77']);
   });
 
+  it('scrolls the correct key into view when the answer is revealed', () => {
+    const scrolled: (string | null)[] = [];
+    const original = Element.prototype.scrollIntoView;
+    Element.prototype.scrollIntoView = function (this: Element) { scrolled.push(this.getAttribute('data-midi')); };
+    try {
+      const props = { onAnswer: () => {}, disabled: false, wrong: null };
+      const { rerender } = render(<PianoKeyboard lowMidi={36} highMidi={96} correct={null} {...props} />);
+      scrolled.length = 0; // ignore the opening scroll to middle C
+      rerender(<PianoKeyboard lowMidi={36} highMidi={96} correct={88} {...props} disabled wrong={87} />);
+    } finally {
+      Element.prototype.scrollIntoView = original;
+    }
+    // 88 is a white key (E), so its slot is the scroll target.
+    expect(scrolled).toEqual(['88']);
+  });
+
   it('does not throw when scrollIntoView is missing (jsdom)', () => {
     expect(() => render(<PianoKeyboard lowMidi={60} highMidi={71} onAnswer={() => {}} disabled={false} correct={null} wrong={null} />)).not.toThrow();
   });

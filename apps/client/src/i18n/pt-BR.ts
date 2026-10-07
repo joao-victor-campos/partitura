@@ -71,6 +71,7 @@ export const t = {
     relation: (part: string, whole: string) => `Quantas ${part} cabem em uma ${whole}?`,
     correct: 'Certo!',
     wrongWas: (answer: string) => `Era ${answer}`,
+    wrongOctave: (answer: string) => `Era ${answer}, em outra oitava`,
     next: 'Próxima',
     quit: 'Sair',
     middleC: 'Dó central',
