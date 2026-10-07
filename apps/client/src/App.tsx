@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import type { ExerciseKind, RoundRecord } from '@partitura/core';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { exitApp, useBackButton } from './hooks/useBackButton';
 import { HomeScreen } from './training/HomeScreen';
 import { ProgressScreen } from './training/ProgressScreen';
 import { RoundScreen } from './training/RoundScreen';
@@ -18,6 +20,26 @@ export default function App() {
   const home = () => setScreen({ name: 'home' });
   const play = (start: RoundStart) => setScreen({ name: 'round', start, run: Date.now() });
 
+  // Android back button: one step up, never straight out of the app mid-Round.
+  useBackButton(() => {
+    if (screen.name === 'home') exitApp();
+    else if (screen.name === 'round') setScreen({ name: 'setup', exercise: screen.start.config.exercise });
+    else home();
+  });
+
+  return (
+    <ErrorBoundary key={screen.name} onReset={home}>
+      <CurrentScreen screen={screen} setScreen={setScreen} home={home} play={play} />
+    </ErrorBoundary>
+  );
+}
+
+function CurrentScreen({ screen, setScreen, home, play }: {
+  screen: Screen;
+  setScreen: (screen: Screen) => void;
+  home: () => void;
+  play: (start: RoundStart) => void;
+}) {
   switch (screen.name) {
     case 'home':
       return (
