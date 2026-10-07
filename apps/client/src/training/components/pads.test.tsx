@@ -21,6 +21,15 @@ describe('NamePad', () => {
     expect(onAnswer).toHaveBeenCalledWith('G');
   });
 
+  it('ignores auto-repeated key events while a key is held', () => {
+    const onAnswer = vi.fn();
+    render(<NamePad onAnswer={onAnswer} disabled={false} correct={null} wrong={null} />);
+    fireEvent.keyDown(window, { key: 'g' });
+    fireEvent.keyDown(window, { key: 'g', repeat: true });
+    fireEvent.keyDown(window, { key: 'g', repeat: true });
+    expect(onAnswer).toHaveBeenCalledTimes(1);
+  });
+
   it('ignores keys and marks the right and wrong answers during feedback', () => {
     const onAnswer = vi.fn();
     render(<NamePad onAnswer={onAnswer} disabled correct="A" wrong="B" />);

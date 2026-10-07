@@ -9,6 +9,7 @@ export function useKeyDown(handler: (event: KeyboardEvent) => void, enabled: boo
   useEffect(() => {
     if (!enabled) return;
     const listener = (event: KeyboardEvent) => {
+      if (event.repeat) return; // holding a key must not answer repeatedly
       if (event.ctrlKey || event.metaKey || event.altKey) return;
       latest.current(event);
     };
