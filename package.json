@@ -1,0 +1,9 @@
+{
+  "name": "partitura",
+  "private": true,
+  "scripts": {
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "dev": "pnpm --filter @partitura/client dev"
+  }
+}
